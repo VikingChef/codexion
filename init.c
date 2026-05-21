@@ -1,0 +1,61 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/05/13 11:41:03 by rrasmuss          #+#    #+#             */
+/*   Updated: 2026/05/21 14:20:42 by rrasmuss         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "coders.h"
+
+void	init_rules(t_rules *rules, char **argv)
+{
+	if (!rules || !argv)
+		return ;
+	rules->num_coders = atoi(argv[1]);
+	rules->time_to_burnout = atoi(argv[2]);
+	rules->time_to_compile = atoi(argv[3]);
+	rules->time_to_debug = atoi(argv[4]);
+	rules->time_to_refactor = atoi(argv[5]);
+	rules->num_compiles_required = atoi(argv[6]);
+	rules->dongle_cooldown = atoi(argv[7]);
+	rules->scheduler = argv[8];
+	rules->simulation_end = 0;
+	rules->start_time = 0;
+	rules->dongles = NULL;
+	rules->coders = NULL;
+}
+
+int	init_log_mutex(t_rules *rules)
+{
+	if (!rules)
+		return (0);
+	if (pthread_mutex_init(&rules->log_mutex, NULL) != 0)
+		return (0);
+	return (1);
+}
+
+int	init_program(t_rules *rules, char **argv)
+{
+	if (!rules || !argv)
+		return (0);
+	init_rules(rules, argv);
+	if (init_log_mutex(rules) == 0)
+		return (0);
+	if (init_dongles(rules) == 0)
+	{
+		cleanup_rules(rules);
+		return (0);
+	}
+	if (init_coders(rules) == 0)
+	{
+		cleanup_rules(rules);
+		return (0);
+	}
+	rules->start_time = get_time_ms();
+	return (1);
+}
