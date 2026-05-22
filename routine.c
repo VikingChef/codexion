@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/22 16:04:12 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/22 16:15:37 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,6 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	if (!coder)
 		return (NULL);
+	print_status(coder->rules, coder->id, "is ready");
 	return (NULL);
 }
