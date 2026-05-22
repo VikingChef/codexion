@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:38:41 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/21 13:40:30 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/21 15:39:38 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,11 @@ int	main(int argc, char **argv)
 		return (1);
 	if (init_program(&rules, argv) == 0)
 		return (1);
+	if (start_simulation(&rules) == 0)
+	{
+		cleanup_rules(&rules);
+		return (1);
+	}
 	cleanup_rules(&rules);
 	return (0);
 }

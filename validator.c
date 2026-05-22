@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 11:42:55 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/21 13:53:34 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/21 15:09:28 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	validate_arg_count(int argc)
 {
 	if (argc != 9)
 	{
-		printf("Arg_count Error\n");
+		print_error("Arg_count Error");
 		return (0);
 	}
 	else
@@ -32,7 +32,7 @@ int	validate_arg_numbers(char **argv)
 	{
 		if (is_numeric_str(argv[i]) == 0)
 		{
-			printf("Arg_numbers Error\n");
+			print_error("Arg_numbers Error");
 			return (0);
 		}
 		i++;
@@ -46,7 +46,7 @@ int	validate_arg_values(char **argv)
 		return (0);
 	if (atoi(argv[1]) == 0)
 	{
-		printf("Arg_value Error\n");
+		print_error("Arg_value Error");
 		return (0);
 	}
 	return (1);
@@ -62,7 +62,7 @@ int	validate_args(int argc, char **argv)
 		return (0);
 	if (is_valid_scheduler(argv[8]) == 0)
 	{
-		printf("Scheduler Error\n");
+		print_error("Scheduler Error");
 		return (0);
 	}
 	return (1);

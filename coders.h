@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/21 14:24:19 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/21 15:13:52 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,5 +89,7 @@ void		destroy_coders(t_rules *rules);
 int			init_program(t_rules *rules, char **argv);
 long long	get_time_ms(void);
 void		print_status(t_rules *rules, int id, char *status);
+void		print_error(char *message);
+int			start_simulation(t_rules *rules);
 
 #endif
