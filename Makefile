@@ -6,14 +6,14 @@
 #    By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/13 12:52:51 by rrasmuss          #+#    #+#              #
-#    Updated: 2026/05/21 14:38:20 by rrasmuss         ###   ########.fr        #
+#    Updated: 2026/05/22 16:10:56 by rrasmuss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = codexion
 
 # List all source files, including bonus ones
-SRC = main.c validator.c utils.c init.c cleanup.c dongles.c coders.c logging.c
+SRC = main.c validator.c utils.c init.c cleanup.c dongles.c coders.c logging.c simulation.c routine.c
 
 # Convert .c files to .o files
 OBJ = $(SRC:.c=.o)
