@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 09:24:55 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 11:46:58 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,11 @@ void	coder_cycle(t_coder *coder)
 {
 	if (!coder)
 		return ;
+	if (take_dongles(coder) == 0)
+		return ;
 	print_status(coder->rules, coder->id, "is compiling");
 	smart_sleep(coder->rules->time_to_compile);
+	release_dongles(coder);
 	print_status(coder->rules, coder->id, "is debugging");
 	smart_sleep(coder->rules->time_to_debug);
 	print_status(coder->rules, coder->id, "is refactoring");
