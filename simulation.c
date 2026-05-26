@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/21 15:11:34 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/22 16:08:03 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 16:20:06 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,12 @@ int	start_simulation(t_rules *rules)
 {
 	if (rules == NULL)
 		return (0);
+	if (create_monitor_thread(rules) == 0)
+		return (0);
 	if (create_coder_threads(rules) == 0)
 		return (0);
 	join_coder_threads(rules, rules->num_coders);
+	join_monitor_thread(rules);
 	return (1);
 }
 
@@ -54,4 +57,21 @@ void	join_coder_threads(t_rules *rules, int count)
 		pthread_join(rules->coders[i].thread, NULL);
 		i++;
 	}
+}
+
+int	create_monitor_thread(t_rules *rules)
+{
+	if (rules == NULL)
+		return (0);
+	if (pthread_create(&rules->monitor_thread,
+			NULL, monitor_routine, rules) != 0)
+		return (0);
+	return (1);
+}
+
+void	join_monitor_thread(t_rules *rules)
+{
+	if (rules == NULL)
+		return ;
+	pthread_join(rules->monitor_thread, NULL);
 }

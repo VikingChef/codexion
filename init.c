@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 11:41:03 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/21 14:20:42 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 14:33:23 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void	init_rules(t_rules *rules, char **argv)
 	rules->scheduler = argv[8];
 	rules->simulation_end = 0;
 	rules->start_time = 0;
+	rules->monitor_thread = 0;
 	rules->dongles = NULL;
 	rules->coders = NULL;
 }

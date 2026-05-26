@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 13:50:13 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 16:08:41 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_rules
 	long long		start_time;
 	int				simulation_end;
 	pthread_mutex_t	log_mutex;
+	pthread_t		monitor_thread;
 	t_dongle		*dongles;
 	t_coder			*coders;
 }	t_rules;
@@ -97,8 +98,11 @@ int			start_simulation(t_rules *rules);
 int			create_coder_threads(t_rules *rules);
 void		*coder_routine(void *arg);
 void		join_coder_threads(t_rules *rules, int count);
+int			create_monitor_thread(t_rules *rules);
+void		join_monitor_thread(t_rules *rules);
 void		coder_cycle(t_coder *coder);
 int			coder_is_done(t_coder *coder);
 void		smart_sleep(long long duration);
+void		*monitor_routine(void *arg);
 
 #endif

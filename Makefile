@@ -6,7 +6,7 @@
 #    By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/13 12:52:51 by rrasmuss          #+#    #+#              #
-#    Updated: 2026/05/26 09:37:35 by rrasmuss         ###   ########.fr        #
+#    Updated: 2026/05/26 15:25:32 by rrasmuss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -23,7 +23,8 @@ SRC = main.c \
 	logging.c \
 	simulation.c \
 	routine.c \
-	dongle_access.c
+	dongle_access.c \
+	monitor.c
 
 # Convert .c files to .o files
 OBJ = $(SRC:.c=.o)
