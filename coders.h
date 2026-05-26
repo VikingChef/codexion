@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/22 14:27:16 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/22 17:05:34 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,7 @@ int			start_simulation(t_rules *rules);
 int			create_coder_threads(t_rules *rules);
 void		*coder_routine(void *arg);
 void		join_coder_threads(t_rules *rules, int count);
+void		coder_cycle(t_coder *coder);
+void		smart_sleep(long long duration);
 
 #endif

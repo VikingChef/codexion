@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:56:18 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/21 14:38:35 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 09:27:02 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,4 +47,13 @@ long long	get_time_ms(void)
 	if (gettimeofday(&tv, NULL) != 0)
 		return (0);
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
+}
+
+void	smart_sleep(long long duration)
+{
+	long long	start;
+
+	start = get_time_ms();
+	while (get_time_ms() - start < duration)
+		usleep (500);
 }
