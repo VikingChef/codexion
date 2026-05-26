@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 11:46:58 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 14:20:02 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	if (!coder)
 		return (NULL);
-	coder_cycle(coder);
+	while (!coder_is_done(coder))
+		coder_cycle(coder);
 	return (NULL);
 }
 
@@ -31,9 +32,26 @@ void	coder_cycle(t_coder *coder)
 		return ;
 	print_status(coder->rules, coder->id, "is compiling");
 	smart_sleep(coder->rules->time_to_compile);
+	pthread_mutex_lock(&coder->state_mutex);
+	coder->compiles_done++;
+	pthread_mutex_unlock(&coder->state_mutex);
 	release_dongles(coder);
 	print_status(coder->rules, coder->id, "is debugging");
 	smart_sleep(coder->rules->time_to_debug);
 	print_status(coder->rules, coder->id, "is refactoring");
 	smart_sleep(coder->rules->time_to_refactor);
+}
+
+int	coder_is_done(t_coder *coder)
+{
+	int	done;
+
+	if (!coder)
+		return (1);
+	if (!coder->rules)
+		return (1);
+	pthread_mutex_lock(&coder->state_mutex);
+	done = coder->compiles_done >= coder->rules->num_compiles_required;
+	pthread_mutex_unlock(&coder->state_mutex);
+	return (done);
 }

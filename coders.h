@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 11:49:52 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/26 13:50:13 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ int			create_coder_threads(t_rules *rules);
 void		*coder_routine(void *arg);
 void		join_coder_threads(t_rules *rules, int count);
 void		coder_cycle(t_coder *coder);
+int			coder_is_done(t_coder *coder);
 void		smart_sleep(long long duration);
 
 #endif
