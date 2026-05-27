@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 16:08:41 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 11:11:25 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,5 +104,6 @@ void		coder_cycle(t_coder *coder);
 int			coder_is_done(t_coder *coder);
 void		smart_sleep(long long duration);
 void		*monitor_routine(void *arg);
+int			check_all_done(t_rules *rules);
 
 #endif
