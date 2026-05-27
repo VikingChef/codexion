@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:56:18 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 09:27:02 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 14:11:57 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@ long long	get_time_ms(void)
 	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }
 
-void	smart_sleep(long long duration)
+void	smart_sleep(t_rules *rules, long long duration)
 {
 	long long	start;
 
 	start = get_time_ms();
-	while (get_time_ms() - start < duration)
+	while ((get_time_ms() - start < duration) && !simulation_has_ended(rules))
 		usleep (500);
 }

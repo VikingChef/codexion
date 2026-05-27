@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/27 13:44:05 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 14:13:45 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,15 +31,15 @@ void	coder_cycle(t_coder *coder)
 	if (take_dongles(coder) == 0)
 		return ;
 	print_status(coder->rules, coder->id, "is compiling");
-	smart_sleep(coder->rules->time_to_compile);
+	smart_sleep(coder->rules, coder->rules->time_to_compile);
 	pthread_mutex_lock(&coder->state_mutex);
 	coder->compiles_done++;
 	pthread_mutex_unlock(&coder->state_mutex);
 	release_dongles(coder);
 	print_status(coder->rules, coder->id, "is debugging");
-	smart_sleep(coder->rules->time_to_debug);
+	smart_sleep(coder->rules, coder->rules->time_to_debug);
 	print_status(coder->rules, coder->id, "is refactoring");
-	smart_sleep(coder->rules->time_to_refactor);
+	smart_sleep(coder->rules, coder->rules->time_to_refactor);
 }
 
 int	coder_is_done(t_coder *coder)

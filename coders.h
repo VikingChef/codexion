@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/27 13:15:09 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 13:53:08 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,7 @@ int			create_monitor_thread(t_rules *rules);
 void		join_monitor_thread(t_rules *rules);
 void		coder_cycle(t_coder *coder);
 int			coder_is_done(t_coder *coder);
-void		smart_sleep(long long duration);
+void		smart_sleep(t_rules *rules, long long duration);
 void		*monitor_routine(void *arg);
 int			check_all_done(t_rules *rules);
 
