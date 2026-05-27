@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/27 11:11:25 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 13:15:09 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ typedef struct s_rules
 	long long		start_time;
 	int				simulation_end;
 	pthread_mutex_t	log_mutex;
+	pthread_mutex_t	end_mutex;
 	pthread_t		monitor_thread;
 	t_dongle		*dongles;
 	t_coder			*coders;
@@ -78,6 +79,7 @@ int			validate_arg_values(char **argv);
 int			validate_args(int argc, char **argv);
 void		init_rules(t_rules *rules, char **argv);
 int			init_log_mutex(t_rules *rules);
+int			init_end_mutex(t_rules *rules);
 void		cleanup_rules(t_rules *rules);
 int			init_dongles(t_rules *rules);
 int			init_one_dongle(t_dongle *dongle, int id);
@@ -95,6 +97,7 @@ long long	get_time_ms(void);
 void		print_status(t_rules *rules, int id, char *status);
 void		print_error(char *message);
 int			start_simulation(t_rules *rules);
+int			simulation_has_ended(t_rules *rules);
 int			create_coder_threads(t_rules *rules);
 void		*coder_routine(void *arg);
 void		join_coder_threads(t_rules *rules, int count);

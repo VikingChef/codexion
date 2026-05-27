@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 14:20:02 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 13:44:05 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	*coder_routine(void *arg)
 	coder = (t_coder *)arg;
 	if (!coder)
 		return (NULL);
-	while (!coder_is_done(coder))
+	while (!coder_is_done(coder) && !simulation_has_ended(coder->rules))
 		coder_cycle(coder);
 	return (NULL);
 }

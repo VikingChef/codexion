@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/13 11:41:03 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/26 14:33:23 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 12:48:55 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,15 @@ int	init_log_mutex(t_rules *rules)
 	return (1);
 }
 
+int	init_end_mutex(t_rules *rules)
+{
+	if (!rules)
+		return (0);
+	if (pthread_mutex_init(&rules->end_mutex, NULL) != 0)
+		return (0);
+	return (1);
+}
+
 int	init_program(t_rules *rules, char **argv)
 {
 	if (!rules || !argv)
@@ -47,6 +56,11 @@ int	init_program(t_rules *rules, char **argv)
 	init_rules(rules, argv);
 	if (init_log_mutex(rules) == 0)
 		return (0);
+	if (init_end_mutex(rules) == 0)
+	{
+		pthread_mutex_destroy(&rules->log_mutex);
+		return (0);
+	}
 	if (init_dongles(rules) == 0)
 	{
 		cleanup_rules(rules);
