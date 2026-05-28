@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 14:57:51 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/28 15:51:35 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/28 16:04:25 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@ int	do_compile(t_coder *coder)
 		return (0);
 	if (take_dongles(coder) == 0)
 		return (0);
+	if (simulation_has_ended(coder->rules))
+	{
+		release_dongles(coder);
+		return (0);
+	}
 	pthread_mutex_lock(&coder->state_mutex);
 	coder->last_compile_start = get_time_ms();
 	pthread_mutex_unlock(&coder->state_mutex);
