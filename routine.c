@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/27 14:13:45 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/27 15:26:54 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,9 @@ void	coder_cycle(t_coder *coder)
 		return ;
 	if (take_dongles(coder) == 0)
 		return ;
+	pthread_mutex_lock(&coder->state_mutex);
+	coder->last_compile_start = get_time_ms();
+	pthread_mutex_unlock(&coder->state_mutex);
 	print_status(coder->rules, coder->id, "is compiling");
 	smart_sleep(coder->rules, coder->rules->time_to_compile);
 	pthread_mutex_lock(&coder->state_mutex);

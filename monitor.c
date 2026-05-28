@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 14:42:33 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/27 13:37:20 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:06:53 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,16 @@ void	*monitor_routine(void *arg)
 	if (!rules)
 		return (NULL);
 	while (check_all_done(rules) == 0)
+	{
+		if (check_burnout(rules) == 1)
+		{
+			pthread_mutex_lock(&rules->end_mutex);
+			rules->simulation_end = 1;
+			pthread_mutex_unlock(&rules->end_mutex);
+			return (NULL);
+		}
 		usleep(1000);
+	}
 	pthread_mutex_lock(&rules->end_mutex);
 	rules->simulation_end = 1;
 	pthread_mutex_unlock(&rules->end_mutex);
@@ -53,4 +62,25 @@ int	simulation_has_ended(t_rules *rules)
 	ended = rules->simulation_end;
 	pthread_mutex_unlock(&rules->end_mutex);
 	return (ended);
+}
+
+int	check_burnout(t_rules *rules)
+{
+	int			i;
+	long long	last_start;
+
+	if (!rules)
+		return (0);
+	i = 0;
+	while (i < rules->num_coders)
+	{
+		pthread_mutex_lock(&rules->coders[i].state_mutex);
+		last_start = rules->coders[i].last_compile_start;
+		pthread_mutex_unlock(&rules->coders[i].state_mutex);
+		if (last_start != 0
+			&& (get_time_ms() - last_start >= rules->time_to_burnout))
+			return (1);
+		i++;
+	}
+	return (0);
 }
