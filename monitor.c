@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 14:42:33 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/28 14:06:53 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/28 14:28:16 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,10 @@ int	check_burnout(t_rules *rules)
 		pthread_mutex_unlock(&rules->coders[i].state_mutex);
 		if (last_start != 0
 			&& (get_time_ms() - last_start >= rules->time_to_burnout))
+		{
+			print_status(rules, rules->coders[i].id, "burned out");
 			return (1);
+		}
 		i++;
 	}
 	return (0);
