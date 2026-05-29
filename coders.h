@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/28 15:01:21 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/29 13:36:47 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ int			init_dongles(t_rules *rules);
 int			init_one_dongle(t_dongle *dongle, int id);
 void		destroy_dongles(t_rules *rules);
 void		destroy_partial_dongles(t_rules *rules, int count);
-void		take_one_dongle(t_rules *rules, t_coder *coder, int dongle_id);
+int			take_one_dongle(t_rules *rules, t_coder *coder, int dongle_id);
 int			take_dongles(t_coder *coder);
 void		release_dongles(t_coder *coder);
 int			init_one_coder(t_coder *coder, int id, t_rules *rules);
