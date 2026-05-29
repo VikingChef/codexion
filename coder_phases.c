@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/28 14:57:51 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/28 16:04:25 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/05/29 15:14:02 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,20 @@ int	do_compile(t_coder *coder)
 	coder->compiles_done++;
 	pthread_mutex_unlock(&coder->state_mutex);
 	release_dongles(coder);
+	return (1);
+}
+
+int	do_debug(t_coder *coder)
+{
+	if (!coder)
+		return (0);
+	if (!coder->rules)
+		return (0);
+	if (simulation_has_ended(coder->rules))
+		return (0);
+	print_status(coder->rules, coder->id, "is debugging");
+	smart_sleep(coder->rules, coder->rules->time_to_debug);
+	if (simulation_has_ended(coder->rules))
+		return (0);
 	return (1);
 }
