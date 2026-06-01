@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/22 12:44:31 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/29 15:17:23 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/01 09:35:01 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	coder_cycle(t_coder *coder)
 		return ;
 	if (do_debug(coder) == 0)
 		return ;
-	print_status(coder->rules, coder->id, "is refactoring");
-	smart_sleep(coder->rules, coder->rules->time_to_refactor);
+	if (do_refactor(coder) == 0)
+		return ;
 }
 
 int	coder_is_done(t_coder *coder)
