@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 09:33:45 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/29 14:21:16 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/01 14:11:54 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,16 @@ int	take_one_dongle(t_rules *rules, t_coder *coder, int dongle_id)
 		pthread_mutex_unlock(&rules->dongles[dongle_id].mutex);
 		return (0);
 	}
+	while (get_time_ms() < rules->dongles[dongle_id].cooldown_until)
+	{
+		if (simulation_has_ended(rules))
+		{
+			pthread_mutex_unlock(&rules->dongles[dongle_id].mutex);
+			return (0);
+		}
+		usleep(500);
+	}
+	rules->dongles[dongle_id].available = 0;
 	print_status(rules, coder->id, "has taken a dongle");
 	return (1);
 }
@@ -68,6 +78,7 @@ void	release_dongles(t_coder *coder)
 	t_rules		*rules;
 	int			left;
 	int			right;
+	long long	cooldown_until;
 
 	if (!coder)
 		return ;
@@ -76,6 +87,13 @@ void	release_dongles(t_coder *coder)
 		return ;
 	left = coder->id;
 	right = (coder->id + 1) % rules->num_coders;
+	cooldown_until = get_time_ms() + rules->dongle_cooldown;
+	rules->dongles[right].cooldown_until = cooldown_until;
+	rules->dongles[right].available = 1;
+	pthread_cond_broadcast(&rules->dongles[right].cond);
+	rules->dongles[left].cooldown_until = cooldown_until;
+	rules->dongles[left].available = 1;
+	pthread_cond_broadcast(&rules->dongles[left].cond);
 	pthread_mutex_unlock(&rules->dongles[right].mutex);
 	pthread_mutex_unlock(&rules->dongles[left].mutex);
 }
