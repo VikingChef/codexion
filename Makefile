@@ -6,7 +6,7 @@
 #    By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/13 12:52:51 by rrasmuss          #+#    #+#              #
-#    Updated: 2026/06/02 09:44:46 by rrasmuss         ###   ########.fr        #
+#    Updated: 2026/06/02 12:46:07 by rrasmuss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,7 +26,8 @@ SRC = main.c \
 	dongle_access.c \
 	monitor.c \
 	coder_phases.c \
-	scheduler.c
+	scheduler_heap.c \
+	scheduler_compare.c
 
 # Convert .c files to .o files
 OBJ = $(SRC:.c=.o)

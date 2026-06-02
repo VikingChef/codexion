@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/02 10:42:19 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/02 15:27:07 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,7 +127,11 @@ void		smart_sleep(t_rules *rules, long long duration);
 void		*monitor_routine(void *arg);
 int			check_all_done(t_rules *rules);
 int			check_burnout(t_rules *rules);
+int			compare_requests(t_request a, t_request b, char *scheduler);
 int			heap_push(t_request_heap *heap, t_request request,
+				char *scheduler);
+int			heap_peek(t_request_heap *heap, t_request *out);
+int			heap_pop(t_request_heap *heap, t_request *out,
 				char *scheduler);
 
 #endif
