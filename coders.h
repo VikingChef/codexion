@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/01 14:47:18 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/02 10:42:19 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,5 +127,7 @@ void		smart_sleep(t_rules *rules, long long duration);
 void		*monitor_routine(void *arg);
 int			check_all_done(t_rules *rules);
 int			check_burnout(t_rules *rules);
+int			heap_push(t_request_heap *heap, t_request request,
+				char *scheduler);
 
 #endif
