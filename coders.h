@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/29 13:36:47 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/01 14:47:18 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,20 @@
 # include <unistd.h>
 # include <sys/time.h>
 
+typedef struct s_request
+{
+	int			coder_id;
+	long long	arrival_time;
+	long long	deadline;
+}	t_request;
+
+typedef struct s_request_heap
+{
+	t_request	*requests;
+	int			size;
+	int			capacity;
+}	t_request_heap;
+
 /*
 ** the dongle
 */
@@ -31,6 +45,7 @@ typedef struct s_dongle
 	long long		cooldown_until;
 	pthread_mutex_t	mutex;
 	pthread_cond_t	cond;
+	t_request_heap	queue;
 }	t_dongle;
 
 typedef struct s_coder	t_coder;
@@ -82,7 +97,7 @@ int			init_log_mutex(t_rules *rules);
 int			init_end_mutex(t_rules *rules);
 void		cleanup_rules(t_rules *rules);
 int			init_dongles(t_rules *rules);
-int			init_one_dongle(t_dongle *dongle, int id);
+int			init_one_dongle(t_dongle *dongle, int id, int capacity);
 void		destroy_dongles(t_rules *rules);
 void		destroy_partial_dongles(t_rules *rules, int count);
 int			take_one_dongle(t_rules *rules, t_coder *coder, int dongle_id);
