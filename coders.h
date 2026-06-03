@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/03 08:46:55 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/03 12:22:36 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,8 @@ int			init_dongles(t_rules *rules);
 int			init_one_dongle(t_dongle *dongle, int id, int capacity);
 void		destroy_dongles(t_rules *rules);
 void		destroy_partial_dongles(t_rules *rules, int count);
+void		lock_two_dongles(t_rules *rules, int first, int second);
+void		unlock_two_dongles(t_rules *rules, int first, int second);
 int			take_one_dongle(t_rules *rules, t_coder *coder, int dongle_id);
 int			take_dongles(t_coder *coder);
 void		release_dongles(t_coder *coder);
@@ -134,5 +136,6 @@ int			heap_peek(t_request_heap *heap, t_request *out);
 int			heap_pop(t_request_heap *heap, t_request *out,
 				char *scheduler);
 int			build_coder_request(t_coder *coder, t_request *out);
+
 
 #endif
