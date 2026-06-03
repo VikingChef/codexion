@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/02 15:27:07 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/03 08:46:55 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,5 +133,6 @@ int			heap_push(t_request_heap *heap, t_request request,
 int			heap_peek(t_request_heap *heap, t_request *out);
 int			heap_pop(t_request_heap *heap, t_request *out,
 				char *scheduler);
+int			build_coder_request(t_coder *coder, t_request *out);
 
 #endif
