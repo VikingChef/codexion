@@ -6,52 +6,46 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 09:33:45 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/01 14:11:54 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/04 10:59:09 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "coders.h"
 
-int	take_one_dongle(t_rules *rules, t_coder *coder, int dongle_id)
+static int	can_take_dongle_pair(t_rules *rules, int left, int right)
 {
-	if (!coder)
-		return (0);
-	if (!rules)
-		return (0);
-	pthread_mutex_lock(&rules->dongles[dongle_id].mutex);
+	long long	now;
+
 	if (simulation_has_ended(rules))
-	{
-		pthread_mutex_unlock(&rules->dongles[dongle_id].mutex);
 		return (0);
-	}
-	while (get_time_ms() < rules->dongles[dongle_id].cooldown_until)
-	{
-		if (simulation_has_ended(rules))
-		{
-			pthread_mutex_unlock(&rules->dongles[dongle_id].mutex);
-			return (0);
-		}
-		usleep(500);
-	}
-	rules->dongles[dongle_id].available = 0;
-	print_status(rules, coder->id, "has taken a dongle");
+	now = get_time_ms();
+	if (rules->dongles[left].cooldown_until > now
+		|| rules->dongles[right].cooldown_until > now)
+		return (0);
+	if (rules->dongles[left].available == 0
+		|| rules->dongles[right].available == 0)
+		return (0);
 	return (1);
 }
 
-static int	take_ordered_dongles(t_rules *rules, t_coder *coder,
-		int first, int second)
+static int	take_dongle_pair(t_rules *rules, t_coder *coder,
+		int left, int right)
 {
 	if (!coder)
 		return (0);
 	if (!rules)
 		return (0);
-	if (!take_one_dongle(rules, coder, first))
-		return (0);
-	if (!take_one_dongle(rules, coder, second))
+	lock_two_dongles(rules, left, right);
+	if (!can_take_dongle_pair(rules, left, right))
 	{
-		pthread_mutex_unlock(&rules->dongles[first].mutex);
+		unlock_two_dongles(rules, left, right);
 		return (0);
 	}
+	rules->dongles[left].available = 0;
+	print_status(rules, coder->id, "has taken a dongle");
+	rules->dongles[right].available = 0;
+	print_status(rules, coder->id, "has taken a dongle");
+	unlock_two_dongles(rules, left, right);
 	return (1);
 }
 
@@ -68,9 +62,7 @@ int	take_dongles(t_coder *coder)
 		return (0);
 	left = coder->id;
 	right = (coder->id + 1) % rules->num_coders;
-	if (coder->id % 2 == 0)
-		return (take_ordered_dongles(rules, coder, left, right));
-	return (take_ordered_dongles(rules, coder, right, left));
+	return (take_dongle_pair(rules, coder, left, right));
 }
 
 void	release_dongles(t_coder *coder)
@@ -88,12 +80,12 @@ void	release_dongles(t_coder *coder)
 	left = coder->id;
 	right = (coder->id + 1) % rules->num_coders;
 	cooldown_until = get_time_ms() + rules->dongle_cooldown;
+	lock_two_dongles(rules, left, right);
 	rules->dongles[right].cooldown_until = cooldown_until;
 	rules->dongles[right].available = 1;
 	pthread_cond_broadcast(&rules->dongles[right].cond);
 	rules->dongles[left].cooldown_until = cooldown_until;
 	rules->dongles[left].available = 1;
 	pthread_cond_broadcast(&rules->dongles[left].cond);
-	pthread_mutex_unlock(&rules->dongles[right].mutex);
-	pthread_mutex_unlock(&rules->dongles[left].mutex);
+	unlock_two_dongles(rules, left, right);
 }
