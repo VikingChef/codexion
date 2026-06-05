@@ -6,37 +6,25 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 09:33:45 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/04 10:59:09 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/05 12:17:03 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "coders.h"
 
-static int	can_take_dongle_pair(t_rules *rules, int left, int right)
-{
-	long long	now;
-
-	if (simulation_has_ended(rules))
-		return (0);
-	now = get_time_ms();
-	if (rules->dongles[left].cooldown_until > now
-		|| rules->dongles[right].cooldown_until > now)
-		return (0);
-	if (rules->dongles[left].available == 0
-		|| rules->dongles[right].available == 0)
-		return (0);
-	return (1);
-}
-
 static int	take_dongle_pair(t_rules *rules, t_coder *coder,
 		int left, int right)
 {
+	t_request	request;
+
 	if (!coder)
 		return (0);
 	if (!rules)
 		return (0);
+	if (build_coder_request(coder, &request) == 0)
+		return (0);
 	lock_two_dongles(rules, left, right);
-	if (!can_take_dongle_pair(rules, left, right))
+	if (grant_dongle_pair_request(rules, &request, left, right) == 0)
 	{
 		unlock_two_dongles(rules, left, right);
 		return (0);

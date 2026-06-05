@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/04 10:16:40 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/06/05 11:10:42 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,5 +135,11 @@ int			heap_peek(t_request_heap *heap, t_request *out);
 int			heap_pop(t_request_heap *heap, t_request *out,
 				char *scheduler);
 int			build_coder_request(t_coder *coder, t_request *out);
+int			push_dongle_pair_request(t_rules *rules, t_request request,
+				int left, int right);
+int			pop_dongle_pair_request(t_rules *rules, t_request *out,
+				int left, int right);
+int			grant_dongle_pair_request(t_rules *rules, t_request *request,
+				int left, int right);
 
 #endif

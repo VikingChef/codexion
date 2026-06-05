@@ -6,7 +6,7 @@
 #    By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/13 12:52:51 by rrasmuss          #+#    #+#              #
-#    Updated: 2026/06/03 12:20:42 by rrasmuss         ###   ########.fr        #
+#    Updated: 2026/06/04 14:49:27 by rrasmuss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -29,7 +29,8 @@ SRC = main.c \
 	scheduler_heap.c \
 	scheduler_compare.c \
 	scheduler_request.c \
-	dongles_lock.c
+	dongles_lock.c \
+	dongles_queue.c
 
 # Convert .c files to .o files
 OBJ = $(SRC:.c=.o)
