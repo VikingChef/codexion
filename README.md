@@ -141,8 +141,6 @@ The main references and resources used during this project were:
 
 ### AI usage
 
-### AI usage
-
 AI was used as a support tool during the project, mainly for tutoring, review, and debugging discussion.
 
 It was used for:
