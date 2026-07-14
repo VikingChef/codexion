@@ -6,121 +6,128 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/04 14:50:13 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/05 12:15:30 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/07/14 18:36:16 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "coders.h"
 
-int	push_dongle_pair_request(t_rules *rules, t_request request,
-		int left, int right)
+static int	request_state(t_rules *rules, t_request request, int *reserved)
 {
-	if (!rules || !rules->dongles || !rules->scheduler)
-		return (0);
-	if (left == right)
-	{
-		if (rules->dongles[left].queue.size
-			>= rules->dongles[left].queue.capacity)
-			return (0);
-		return (heap_push(&rules->dongles[left].queue, request,
-				rules->scheduler));
-	}
-	if (rules->dongles[left].queue.size
-		>= rules->dongles[left].queue.capacity)
-		return (0);
-	if (rules->dongles[right].queue.size
-		>= rules->dongles[right].queue.capacity)
-		return (0);
-	if (heap_push(&rules->dongles[left].queue, request,
-			rules->scheduler) == 0)
-		return (0);
-	if (heap_push(&rules->dongles[right].queue, request,
-			rules->scheduler) == 0)
-		return (0);
-	return (1);
-}
-
-int	pop_dongle_pair_request(t_rules *rules, t_request *out,
-		int left, int right)
-{
-	t_request	left_request;
-	t_request	right_request;
-
-	if (!rules || !rules->dongles || !rules->scheduler || !out)
-		return (0);
-	if (left == right)
-	{
-		return (heap_pop(&rules->dongles[left].queue, out,
-				rules->scheduler));
-	}
-	if (heap_peek(&rules->dongles[left].queue, &left_request) == 0)
-		return (0);
-	if (heap_peek(&rules->dongles[right].queue, &right_request) == 0)
-		return (0);
-	if (left_request.coder_id != right_request.coder_id)
-		return (0);
-	if (heap_pop(&rules->dongles[left].queue, out, rules->scheduler) == 0)
-		return (0);
-	if (heap_pop(&rules->dongles[right].queue,
-			&right_request, rules->scheduler) == 0)
-		return (0);
-	return (1);
-}
-
-static int	coder_has_queue_turn(t_rules *rules, int coder_id,
-		int left, int right)
-{
-	t_request	left_request;
-	t_request	right_request;
-
-	if (!rules || !rules->dongles)
-		return (0);
-	if (heap_peek(&rules->dongles[left].queue, &left_request) == 0)
-		return (0);
-	if (heap_peek(&rules->dongles[right].queue, &right_request) == 0)
-		return (0);
-	if (left_request.coder_id != coder_id)
-		return (0);
-	if (right_request.coder_id != coder_id)
-		return (0);
-	return (1);
-}
-
-static int	pair_request_can_be_granted(t_rules *rules,
-		t_request *request, int left, int right)
-{
+	int			left;
+	int			right;
+	int			state;
 	long long	now;
 
-	if (!rules || !rules->dongles || !request)
+	left = request.coder_id;
+	right = (left + 1) % rules->num_coders;
+	if (reserved[left] || reserved[right])
 		return (0);
+	lock_two_dongles(rules, left, right);
 	now = get_time_ms();
-	if (coder_has_queue_turn(rules, request->coder_id, left, right) == 0)
-		return (0);
-	if (rules->dongles[left].cooldown_until > now
-		|| rules->dongles[right].cooldown_until > now)
-		return (0);
-	if (rules->dongles[left].available == 0
-		|| rules->dongles[right].available == 0)
-		return (0);
+	state = rules->dongles[left].available
+		&& rules->dongles[right].available;
+	if (state && (rules->dongles[left].cooldown_until > now
+			|| rules->dongles[right].cooldown_until > now))
+		state = 1;
+	else if (state)
+		state = 2;
+	unlock_two_dongles(rules, left, right);
+	if (state)
+		reserved[left] = 1;
+	if (state)
+		reserved[right] = 1;
+	return (state);
+}
+
+static int	build_ordered(t_rules *rules, t_request *copy,
+		t_request *ordered, int size)
+{
+	t_request_heap	heap;
+	int				i;
+
+	heap.requests = copy;
+	heap.size = size;
+	heap.capacity = size;
+	i = 0;
+	while (i < size)
+	{
+		copy[i] = rules->scheduler_queue.requests[i];
+		i++;
+	}
+	i = 0;
+	while (i < size)
+	{
+		if (!heap_pop(&heap, &ordered[i], rules->scheduler))
+			return (0);
+		i++;
+	}
 	return (1);
+}
+
+static void	grant_request(t_rules *rules, t_request request)
+{
+	int	left;
+	int	right;
+
+	left = request.coder_id;
+	right = (left + 1) % rules->num_coders;
+	lock_two_dongles(rules, left, right);
+	rules->dongles[left].available = 0;
+	rules->dongles[right].available = 0;
+	mark_coder_granted(rules, left);
+	unlock_two_dongles(rules, left, right);
+	heap_remove_coder(rules, left);
+}
+
+static void	run_scheduler(t_rules *rules)
+{
+	t_request	*copy;
+	t_request	*ordered;
+	int			*reserved;
+	int			size;
+	int			i;
+
+	size = rules->scheduler_queue.size;
+	copy = malloc(sizeof(t_request) * size);
+	ordered = malloc(sizeof(t_request) * size);
+	reserved = calloc(rules->num_coders, sizeof(int));
+	if (!copy || !ordered || !reserved)
+		return (free(copy), free(ordered), free(reserved));
+	if (!build_ordered(rules, copy, ordered, size))
+		return (free(copy), free(ordered), free(reserved));
+	i = 0;
+	while (i < size)
+	{
+		if (request_state(rules, ordered[i], reserved) == 2)
+			grant_request(rules, ordered[i]);
+		i++;
+	}
+	free(copy);
+	free(ordered);
+	free(reserved);
 }
 
 int	grant_dongle_pair_request(t_rules *rules, t_request *request,
 		int left, int right)
 {
-	if (!rules || !rules->dongles || !rules->scheduler || !request)
+	if (!rules || !request || left == right)
 		return (0);
-	if (push_dongle_pair_request(rules, *request, left, right) == 0)
-		return (0);
-	while (pair_request_can_be_granted(rules, request, left, right) == 0)
+	pthread_mutex_lock(&rules->scheduler_mutex);
+	if (!heap_push(&rules->scheduler_queue, *request, rules->scheduler))
+		return (pthread_mutex_unlock(&rules->scheduler_mutex), 0);
+	pthread_mutex_unlock(&rules->scheduler_mutex);
+	while (!simulation_has_ended(rules))
 	{
-		if (simulation_has_ended(rules))
-			return (0);
-		unlock_two_dongles(rules, left, right);
+		pthread_mutex_lock(&rules->scheduler_mutex);
+		run_scheduler(rules);
+		if (collect_coder_grant(rules, request->coder_id))
+			return (pthread_mutex_unlock(&rules->scheduler_mutex), 1);
+		pthread_mutex_unlock(&rules->scheduler_mutex);
 		usleep(500);
-		lock_two_dongles(rules, left, right);
 	}
-	if (pop_dongle_pair_request(rules, request, left, right) == 0)
-		return (0);
-	return (1);
+	pthread_mutex_lock(&rules->scheduler_mutex);
+	heap_remove_coder(rules, request->coder_id);
+	pthread_mutex_unlock(&rules->scheduler_mutex);
+	return (0);
 }

@@ -6,7 +6,7 @@
 #    By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/05/13 12:52:51 by rrasmuss          #+#    #+#              #
-#    Updated: 2026/06/04 14:49:27 by rrasmuss         ###   ########.fr        #
+#    Updated: 2026/07/14 16:17:12 by rrasmuss         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,7 @@ SRC = main.c \
 	monitor.c \
 	coder_phases.c \
 	scheduler_heap.c \
+	scheduler_heap_remove.c \
 	scheduler_compare.c \
 	scheduler_request.c \
 	dongles_lock.c \

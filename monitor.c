@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/26 14:42:33 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/28 14:28:16 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/07/14 14:45:45 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int	simulation_has_ended(t_rules *rules)
 int	check_burnout(t_rules *rules)
 {
 	int			i;
-	long long	last_start;
+	long long	deadline;
 
 	if (!rules)
 		return (0);
@@ -75,12 +75,14 @@ int	check_burnout(t_rules *rules)
 	while (i < rules->num_coders)
 	{
 		pthread_mutex_lock(&rules->coders[i].state_mutex);
-		last_start = rules->coders[i].last_compile_start;
+		deadline = rules->coders[i].last_compile_start;
 		pthread_mutex_unlock(&rules->coders[i].state_mutex);
-		if (last_start != 0
-			&& (get_time_ms() - last_start >= rules->time_to_burnout))
+		if (deadline == 0)
+			deadline = rules->start_time;
+		deadline += rules->time_to_burnout;
+		if (get_time_ms() >= deadline)
 		{
-			print_status(rules, rules->coders[i].id, "burned out");
+			print_burnout_status(rules, rules->coders[i].id);
 			return (1);
 		}
 		i++;

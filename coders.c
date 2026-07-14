@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/18 07:06:46 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/05/21 14:39:36 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/07/14 17:44:48 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ int	init_one_coder(t_coder *coder, int id, t_rules *rules)
 	coder->id = id;
 	coder->compiles_done = 0;
 	coder->last_compile_start = 0;
+	coder->granted = 0;
 	coder->rules = rules;
 	if (pthread_mutex_init(&coder->state_mutex, NULL) != 0)
 		return (0);

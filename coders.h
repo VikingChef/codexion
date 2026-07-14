@@ -6,7 +6,7 @@
 /*   By: rrasmuss <rrasmuss@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/12 16:36:49 by rrasmuss          #+#    #+#             */
-/*   Updated: 2026/06/05 11:10:42 by rrasmuss         ###   ########.fr       */
+/*   Updated: 2026/07/14 18:51:05 by rrasmuss         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,6 @@ typedef struct s_request_heap
 	int			capacity;
 }	t_request_heap;
 
-/*
-** the dongle
-*/
-
 typedef struct s_dongle
 {
 	int				id;
@@ -49,9 +45,6 @@ typedef struct s_dongle
 }	t_dongle;
 
 typedef struct s_coder	t_coder;
-/*
-** The Rules of the Simulation
-*/
 
 typedef struct s_rules
 {
@@ -67,20 +60,19 @@ typedef struct s_rules
 	int				simulation_end;
 	pthread_mutex_t	log_mutex;
 	pthread_mutex_t	end_mutex;
+	pthread_mutex_t	scheduler_mutex;
+	t_request_heap	scheduler_queue;
 	pthread_t		monitor_thread;
 	t_dongle		*dongles;
 	t_coder			*coders;
 }	t_rules;
-
-/*
-** The Individual Coder
-*/
 
 typedef struct s_coder
 {
 	int				id;
 	int				compiles_done;
 	long long		last_compile_start;
+	int				granted;
 	pthread_t		thread;
 	pthread_mutex_t	state_mutex;
 	t_rules			*rules;
@@ -95,7 +87,9 @@ int			validate_args(int argc, char **argv);
 void		init_rules(t_rules *rules, char **argv);
 int			init_log_mutex(t_rules *rules);
 int			init_end_mutex(t_rules *rules);
+int			init_scheduler(t_rules *rules);
 void		cleanup_rules(t_rules *rules);
+void		destroy_base_mutexes(t_rules *rules);
 int			init_dongles(t_rules *rules);
 int			init_one_dongle(t_dongle *dongle, int id, int capacity);
 void		destroy_dongles(t_rules *rules);
@@ -111,6 +105,8 @@ void		destroy_coders(t_rules *rules);
 int			init_program(t_rules *rules, char **argv);
 long long	get_time_ms(void);
 void		print_status(t_rules *rules, int id, char *status);
+void		print_compile_status(t_rules *rules, int id, int left, int right);
+void		print_burnout_status(t_rules *rules, int id);
 void		print_error(char *message);
 int			start_simulation(t_rules *rules);
 int			simulation_has_ended(t_rules *rules);
@@ -134,11 +130,12 @@ int			heap_push(t_request_heap *heap, t_request request,
 int			heap_peek(t_request_heap *heap, t_request *out);
 int			heap_pop(t_request_heap *heap, t_request *out,
 				char *scheduler);
+int			heap_remove_at(t_request_heap *heap, int index,
+				t_request *out, char *scheduler);
+int			heap_remove_coder(t_rules *rules, int coder_id);
 int			build_coder_request(t_coder *coder, t_request *out);
-int			push_dongle_pair_request(t_rules *rules, t_request request,
-				int left, int right);
-int			pop_dongle_pair_request(t_rules *rules, t_request *out,
-				int left, int right);
+void		mark_coder_granted(t_rules *rules, int coder_id);
+int			collect_coder_grant(t_rules *rules, int coder_id);
 int			grant_dongle_pair_request(t_rules *rules, t_request *request,
 				int left, int right);
 
